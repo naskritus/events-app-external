@@ -1,0 +1,15 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['gcloud', 'builds', 'submit', '--tag', '${_IMAGE_NAME}', '.']
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['set', 'image', 'deployment/${_K8SDEPLOYMENT}', '${_K8SDEPLOYMENT}=${_IMAGE_NAME}']
+  env: 
+  - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER}'
+
+substitutions:
+  _CLUSTER: 'clusterk8'
+  _ZONE: 'us-central1-c'
+  _K8SDEPLOYMENT: 'demo-ui'
+  _TAG_NAME: $SHORT_SHA
+  _IMAGE_NAME: 'gcr.io/april2021-dtc113/external:${_TAG_NAME}'
